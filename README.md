@@ -8,8 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import juno.sqlite.SQLiteDatabase;
-import juno.sqlite.SQLiteOpenHelper;
+import javax.sqlite.SQLiteDatabase;
+import javax.sqlite.SQLiteOpenHelper;
 
 public class MySQLiteOpenHelper extends SQLiteOpenHelper {
 
