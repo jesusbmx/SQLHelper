@@ -9,6 +9,8 @@ import javax.util.Debug;
 import javax.util.DBUtils;
 
 public class Schema {
+  static final int FIRST_INDEX = 1;
+  
   final SQLiteDatabase db;
   boolean debugger = false;
 
@@ -41,11 +43,11 @@ public class Schema {
     ResultSet r = db.query(sql);
 
     try {
-      LinkedHashSet set = new LinkedHashSet<Column>();
+      LinkedHashSet<Column> set = new LinkedHashSet<Column>();
       for (Column col : table) {
         // see if the column is there
         int columnIndex = r.findColumn(col.name);
-        if (columnIndex < 0) {
+        if (columnIndex < FIRST_INDEX) {
           // missing_column not there - add it
           set.add(col);
         }
@@ -64,7 +66,7 @@ public class Schema {
     ResultSet r = db.query(sql, "table", tablename);
 
     try {
-      return (r.next()) ? (r.getInt(0) > 0) : (false);
+      return (r.next()) ? (r.getInt(FIRST_INDEX) > 0) : (false);
     } finally {
       DBUtils.closeQuietly(r);
     }
