@@ -2,6 +2,7 @@
 package javax.sqlite.schema;
 
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.LinkedHashSet;
 import javax.sqlite.SQLiteDatabase;
@@ -41,14 +42,16 @@ public class Schema {
     String sql = "SELECT * FROM " + table.name + " LIMIT 1";
     ResultSet r = db.query(sql);
 
-    try {
+    try {  
       LinkedHashSet<Column> set = new LinkedHashSet<Column>();
-      for (Column col : table) {
-        // see if the column is there
-        int columnIndex = r.findColumn(col.name);
-        if (columnIndex < FIRST_INDEX) {
-          // missing_column not there - add it
-          set.add(col);
+      if (r.next()) {
+        for (Column col : table) {
+          // see if the column is there
+          int columnIndex = r.findColumn(col.name);
+          if (columnIndex < FIRST_INDEX) {
+            // missing_column not there - add it
+            set.add(col);
+          }
         }
       }
       return set;
@@ -60,7 +63,7 @@ public class Schema {
   /**
    * Valida si existe una tabla en la base de datos.
    */
-  public boolean hastTable(String tablename) throws SQLException {
+  public boolean hasTable(String tablename) throws SQLException {
     String sql = "SELECT COUNT(*) FROM sqlite_master WHERE type = ? AND name = ?";
     ResultSet r = db.query(sql, "table", tablename);
 
@@ -75,10 +78,10 @@ public class Schema {
    * Crea o actualiza una tabla en la base de datos.
    */
   public Table table(String tablename, Closure closure) throws SQLException {
-    Table table = new Table(tablename);
+    final Table table = new Table(tablename);
     closure.call(table);
 
-    if (hastTable(tablename))
+    if (hasTable(tablename))
       addColumnsIfNotExists(table);
     else
       execSQL(table.toString());
