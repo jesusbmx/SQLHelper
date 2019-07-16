@@ -12,17 +12,16 @@ public class Schema {
   static final int FIRST_INDEX = 1;
   
   final SQLiteDatabase db;
-  boolean debugger = false;
 
   public Schema(SQLiteDatabase db) {
     this.db = db;
   }
   
   public boolean isDebugger() {
-    return debugger;
+    return Debug.isDebuggable();
   }
   public void setDebugger(boolean debugger) {
-    this.debugger = debugger;
+    Debug.setDebuggable(debugger);
   }
    
   /**
