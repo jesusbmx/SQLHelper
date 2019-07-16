@@ -109,6 +109,7 @@ public abstract class SQLiteOpenHelper {
           db.setTransactionSuccessful();
         } catch (SQLException e) {
           db.rollback();
+          Debug.e(TAG, e.getMessage());
         } finally {
           db.endTransaction();
         }
