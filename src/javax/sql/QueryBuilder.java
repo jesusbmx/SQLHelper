@@ -1,6 +1,6 @@
 package javax.sql;
 
-import javax.util.SQLUtils;
+import javax.util.DBUtils;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -162,15 +162,15 @@ public class QueryBuilder {
     // JOIN:
     if (this.joins != null && !this.joins.isEmpty()) {
        for (String join : this.joins) {
-        SQLUtils.appendClause(query, " ", join);
+        DBUtils.appendClause(query, " ", join);
       }
     }
     // EXTRAS:
-    SQLUtils.appendClause(query, " WHERE ", this.where);
-    SQLUtils.appendClause(query, " GROUP BY ", this.groupBy);
-    SQLUtils.appendClause(query, " HAVING ", this.having);
-    SQLUtils.appendClause(query, " ORDER BY ", this.orderBy);
-    SQLUtils.appendClause(query, " LIMIT ", this.limit);
+    DBUtils.appendClause(query, " WHERE ", this.where);
+    DBUtils.appendClause(query, " GROUP BY ", this.groupBy);
+    DBUtils.appendClause(query, " HAVING ", this.having);
+    DBUtils.appendClause(query, " ORDER BY ", this.orderBy);
+    DBUtils.appendClause(query, " LIMIT ", this.limit);
     return query.toString();
   }
   

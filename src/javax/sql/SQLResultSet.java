@@ -1,6 +1,6 @@
 package javax.sql;
 
-import javax.util.SQLUtils;
+import javax.util.DBUtils;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -41,7 +41,7 @@ public class SQLResultSet implements ResultSet {
       resultSet = statement.executeQuery(sql);
       return new SQLResultSet(resultSet, statement);
     } catch(SQLException e) {
-      SQLUtils.closeQuietly(resultSet);
+      DBUtils.closeQuietly(resultSet);
       throw e;
     }
   }
@@ -53,7 +53,7 @@ public class SQLResultSet implements ResultSet {
       resultSet = statement.executeQuery();
       return new SQLResultSet(resultSet, statement);
     } catch(SQLException e) {
-      SQLUtils.closeQuietly(resultSet);
+      DBUtils.closeQuietly(resultSet);
       throw e;
     }
   }
@@ -63,8 +63,8 @@ public class SQLResultSet implements ResultSet {
   }
 
   @Override public void close() {
-    SQLUtils.closeQuietly(delegate);
-    SQLUtils.closeQuietly(statement);
+    DBUtils.closeQuietly(delegate);
+    DBUtils.closeQuietly(statement);
   }
 
   @Override public boolean wasNull() throws SQLException {

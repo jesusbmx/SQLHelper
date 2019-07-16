@@ -11,7 +11,7 @@ import javax.util.Debug;
 import javax.sql.Database;
 import javax.sql.QueryBuilder;
 import javax.sql.SQLResultSet;
-import javax.util.SQLUtils;
+import javax.util.DBUtils;
 
 public class SQLiteDatabase implements AutoCloseable, Database {
   private static final String TAG = "SQLiteDatabase";
@@ -36,7 +36,7 @@ public class SQLiteDatabase implements AutoCloseable, Database {
 
   @Override public void close() {
     synchronized (this) {
-      SQLUtils.closeQuietly(conn);
+      DBUtils.closeQuietly(conn);
     }
   }
 
@@ -74,7 +74,7 @@ public class SQLiteDatabase implements AutoCloseable, Database {
       /**/Debug.i(TAG, sql);
       return resultSet;
     } catch (SQLException e) {
-      SQLUtils.closeQuietly(statement);
+      DBUtils.closeQuietly(statement);
       throw e;
     }
   }
@@ -83,12 +83,12 @@ public class SQLiteDatabase implements AutoCloseable, Database {
     try {
       statement = conn.prepareStatement(sql/*, ResultSet.TYPE_FORWARD_ONLY, 
               ResultSet.CONCUR_READ_ONLY, ResultSet.CLOSE_CURSORS_AT_COMMIT*/);
-      SQLUtils.prepareBind(statement, bindArgs);
+      DBUtils.prepareBind(statement, bindArgs);
       ResultSet resultSet = SQLResultSet.executeQuery(statement);
       /**/Debug.i(TAG, sql, "; ", Arrays.toString(bindArgs));
       return resultSet;
     } catch (SQLException e) {
-      SQLUtils.closeQuietly(statement);
+      DBUtils.closeQuietly(statement);
       throw e;
     }
   }
@@ -107,10 +107,10 @@ public class SQLiteDatabase implements AutoCloseable, Database {
     PreparedStatement statement  = null;
     try {
       statement = compileStatement(sql);
-      SQLUtils.prepareBind(statement, bindArgs);
+      DBUtils.prepareBind(statement, bindArgs);
       return statement.execute();
     } finally {
-      SQLUtils.closeQuietly(statement);
+      DBUtils.closeQuietly(statement);
     }
   }
   public boolean execSQL(String sql) throws SQLException {
@@ -119,7 +119,7 @@ public class SQLiteDatabase implements AutoCloseable, Database {
       statement = createStatement();
       return statement.execute(sql);
     } finally {
-      SQLUtils.closeQuietly(statement);
+      DBUtils.closeQuietly(statement);
     }
   }
   
@@ -136,12 +136,12 @@ public class SQLiteDatabase implements AutoCloseable, Database {
     PreparedStatement ps = null;
     try {
       ps = compileStatement(sql);
-      SQLUtils.prepareBind(ps, bindArgs);
+      DBUtils.prepareBind(ps, bindArgs);
       int rows = ps.executeUpdate();
       /**/Debug.i(TAG, sql, "; ", Arrays.toString(bindArgs));
       return rows;
     } finally {
-      SQLUtils.closeQuietly(ps);
+      DBUtils.closeQuietly(ps);
     }
   }
 
@@ -160,7 +160,7 @@ public class SQLiteDatabase implements AutoCloseable, Database {
     PreparedStatement ps = null;
     try {
       ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-      SQLUtils.prepareBind(ps, bindArgs);
+      DBUtils.prepareBind(ps, bindArgs);
       if (ps.executeUpdate() > 0) {
         /**/Debug.i(TAG, sql, "; ", Arrays.toString(bindArgs));
         ResultSet rs = null;
@@ -170,13 +170,13 @@ public class SQLiteDatabase implements AutoCloseable, Database {
           // retorna la llave.
           return rs.next() ? rs.getLong(1) : 0;
         } finally {
-          SQLUtils.closeQuietly(rs);
+          DBUtils.closeQuietly(rs);
         }
       } else {
         return -1;
       }
     } finally {
-      SQLUtils.closeQuietly(ps);
+      DBUtils.closeQuietly(ps);
     }
   }
   
@@ -366,8 +366,8 @@ public class SQLiteDatabase implements AutoCloseable, Database {
       rs = stmt.executeQuery("PRAGMA user_version");
       return rs.getInt(1);
     } finally {
-      SQLUtils.closeQuietly(rs);
-      SQLUtils.closeQuietly(stmt);
+      DBUtils.closeQuietly(rs);
+      DBUtils.closeQuietly(stmt);
     }
   }
   
@@ -397,7 +397,7 @@ public class SQLiteDatabase implements AutoCloseable, Database {
       rs = query(sql.toString(), vars);
       return rs.next() ? rs.getLong(1) : -1;
     } finally {
-      SQLUtils.closeQuietly(rs);
+      DBUtils.closeQuietly(rs);
     }
   }
   

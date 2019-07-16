@@ -14,7 +14,7 @@ public final class Debug {
   
   public static void i(String tag, Object... msg) {
     if (isDebuggable()) {
-      System.out.printf("[%s]: %s\n", tag, SQLUtils.concat(msg));
+      System.out.printf("[%s]: %s\n", tag, DBUtils.concat(msg));
     }
   }
   public static void i(Class<?> tag, Object... msg) {
@@ -33,7 +33,7 @@ public final class Debug {
 
   public static void w(String tag, Object... msg) {
     if (isDebuggable()) {
-      System.out.printf("[%s]: %s\n", tag, SQLUtils.concat(msg));
+      System.out.printf("[%s]: %s\n", tag, DBUtils.concat(msg));
     }
   }
   public static void w(Class<?> tag, Object... msg) {

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import javax.sql.SQLDataSource;
 import javax.sql.SQLDatabase;
-import javax.util.SQLUtils;
+import javax.util.DBUtils;
 
 public class TestMysql {
 
@@ -22,9 +22,9 @@ public class TestMysql {
     try {
       SQLDatabase db = src.getDatabase();
       rs = db.query("SELECT * FROM alumno WHERE id > ? ORDER BY nombre", 2);
-      return SQLUtils.fromList(rs);
+      return DBUtils.fromList(rs);
     } finally {
-      SQLUtils.closeQuietly(rs);
+      DBUtils.closeQuietly(rs);
       src.close();
     }
   }

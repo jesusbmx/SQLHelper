@@ -1,6 +1,6 @@
 package javax.sql;
 
-import javax.util.SQLUtils;
+import javax.util.DBUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -53,7 +53,7 @@ public class SQLDatabase implements AutoCloseable, Database {
 
   @Override public void close() {
     synchronized (this) {
-      SQLUtils.closeQuietly(conn);
+      DBUtils.closeQuietly(conn);
       Debug.i(getClass(), "CLOSE ", src.url);
     }
   }
@@ -97,12 +97,12 @@ public class SQLDatabase implements AutoCloseable, Database {
     PreparedStatement statement = null;
     try {
       statement = compileStatement(sql);
-      SQLUtils.prepareBind(statement, bindArgs);
+      DBUtils.prepareBind(statement, bindArgs);
       ResultSet resultSet = SQLResultSet.executeQuery(statement);
-       /**/Debug.i(getClass(), SQLUtils.concat(sql, "; ", Arrays.toString(bindArgs)));
+       /**/Debug.i(getClass(), DBUtils.concat(sql, "; ", Arrays.toString(bindArgs)));
       return resultSet;
     } catch(SQLException e) {
-      SQLUtils.closeQuietly(statement);
+      DBUtils.closeQuietly(statement);
       throw e;
     }
   }
@@ -115,7 +115,7 @@ public class SQLDatabase implements AutoCloseable, Database {
       /**/Debug.i(getClass(), sql);
       return resultSet;
     } catch(SQLException e) {
-      SQLUtils.closeQuietly(statement);
+      DBUtils.closeQuietly(statement);
       throw e;
     } 
   }
@@ -134,11 +134,11 @@ public class SQLDatabase implements AutoCloseable, Database {
     PreparedStatement statement  = null;
     try {
       statement = compileStatement(sql);
-      SQLUtils.prepareBind(statement, bindArgs);
-      /**/Debug.i(getClass(), SQLUtils.concat(sql, "; ", Arrays.toString(bindArgs)));
+      DBUtils.prepareBind(statement, bindArgs);
+      /**/Debug.i(getClass(), DBUtils.concat(sql, "; ", Arrays.toString(bindArgs)));
       return statement.execute(sql);
     } finally {
-      SQLUtils.closeQuietly(statement);
+      DBUtils.closeQuietly(statement);
     }
   }
   public boolean execSQL(String sql) throws SQLException {
@@ -148,7 +148,7 @@ public class SQLDatabase implements AutoCloseable, Database {
       /**/Debug.i(getClass(), sql);
       return statement.execute(sql);
     } finally {
-      SQLUtils.closeQuietly(statement);
+      DBUtils.closeQuietly(statement);
     }
   }
   
@@ -164,11 +164,11 @@ public class SQLDatabase implements AutoCloseable, Database {
     PreparedStatement ps = null;
     try {
       ps = compileStatement(sql);
-      SQLUtils.prepareBind(ps, bindArgs);
-      /**/Debug.i(getClass(), SQLUtils.concat(sql, "; ", Arrays.toString(bindArgs)));
+      DBUtils.prepareBind(ps, bindArgs);
+      /**/Debug.i(getClass(), DBUtils.concat(sql, "; ", Arrays.toString(bindArgs)));
       return ps.executeUpdate();
     } finally {
-      SQLUtils.closeQuietly(ps);
+      DBUtils.closeQuietly(ps);
     }
   }
   
@@ -186,9 +186,9 @@ public class SQLDatabase implements AutoCloseable, Database {
     PreparedStatement ps = null;
     try {
       ps = getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-      SQLUtils.prepareBind(ps, bindArgs);
+      DBUtils.prepareBind(ps, bindArgs);
       if (ps.executeUpdate() == 1) {
-        /**/Debug.i(getClass(), SQLUtils.concat(sql, "; ", Arrays.toString(bindArgs)));
+        /**/Debug.i(getClass(), DBUtils.concat(sql, "; ", Arrays.toString(bindArgs)));
         ResultSet rs = null;
         try {
           //obtengo las ultimas llaves generadas
@@ -196,13 +196,13 @@ public class SQLDatabase implements AutoCloseable, Database {
           // retorna la llave.
           return rs.next() ? rs.getLong(1) : 0;
         } finally {
-          SQLUtils.closeQuietly(rs);
+          DBUtils.closeQuietly(rs);
         }
       } else {
         return -1;
       }
     } finally {
-      SQLUtils.closeQuietly(ps);
+      DBUtils.closeQuietly(ps);
     }
   }
   
@@ -336,14 +336,14 @@ public class SQLDatabase implements AutoCloseable, Database {
       rs = query(sql, whereArgs);
       return rs.next() ? rs.getLong("COUNT") : -1;
     } finally {
-      SQLUtils.closeQuietly(rs);
+      DBUtils.closeQuietly(rs);
     }
   }
   
   public ResultSet select(boolean distinct, String table, String[] columns,
             String whereClause, Object[] whereArgs, String groupBy,
             String having, String orderBy, String limit) throws SQLException {
-    if (SQLUtils.isEmpty(groupBy) && !SQLUtils.isEmpty(having)) {
+    if (DBUtils.isEmpty(groupBy) && !DBUtils.isEmpty(having)) {
       throw new IllegalArgumentException(
               "HAVING clauses are only permitted when using a groupBy clause");
     }
@@ -355,17 +355,17 @@ public class SQLDatabase implements AutoCloseable, Database {
       query.append("DISTINCT ");
     }
     if (columns != null && columns.length != 0) {
-      SQLUtils.appendColumns(query, columns);
+      DBUtils.appendColumns(query, columns);
     } else {
       query.append("* ");
     }
     query.append("FROM ");
     query.append(table);
-    SQLUtils.appendClause(query, " WHERE ", whereClause);
-    SQLUtils.appendClause(query, " GROUP BY ", groupBy);
-    SQLUtils.appendClause(query, " HAVING ", having);
-    SQLUtils.appendClause(query, " ORDER BY ", orderBy);
-    SQLUtils.appendClause(query, " LIMIT ", limit);
+    DBUtils.appendClause(query, " WHERE ", whereClause);
+    DBUtils.appendClause(query, " GROUP BY ", groupBy);
+    DBUtils.appendClause(query, " HAVING ", having);
+    DBUtils.appendClause(query, " ORDER BY ", orderBy);
+    DBUtils.appendClause(query, " LIMIT ", limit);
 
     return query(query.toString(), whereArgs);
   }
