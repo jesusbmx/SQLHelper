@@ -41,18 +41,20 @@ public class Schema {
   public LinkedHashSet<Column> getColumnsNotExist(Table table) throws SQLException {
     String sql = "SELECT * FROM " + table.name + " LIMIT 1";
     ResultSet r = db.query(sql);
-
+    ResultSetMetaData rsmd = r.getMetaData();
+ 
     try {  
       LinkedHashSet<Column> set = new LinkedHashSet<Column>();
-      if (r.next()) {
-        for (Column col : table) {
-          // see if the column is there
-          int columnIndex = r.findColumn(col.name);
-          if (columnIndex < FIRST_INDEX) {
-            // missing_column not there - add it
-            set.add(col);
+      for (Column col : table) {
+        // Valida si no existe la columna
+        boolean existe = false;
+        for (int x = 1; x <= rsmd.getColumnCount(); x++) {
+          if (rsmd.getColumnLabel(x).equalsIgnoreCase(col.name)) {
+            existe = true;
+            break;
           }
-        }
+        }  
+        if (!existe) set.add(col);
       }
       return set;
     } finally {
@@ -60,6 +62,7 @@ public class Schema {
     }
   }
 
+  
   /**
    * Valida si existe una tabla en la base de datos.
    */
