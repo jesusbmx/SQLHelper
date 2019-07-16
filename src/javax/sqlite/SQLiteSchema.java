@@ -1,20 +1,24 @@
 
-package javax.sqlite.schema;
+package javax.sqlite;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.LinkedHashSet;
+import javax.schema.Closure;
+import javax.schema.Column;
+import javax.schema.Index;
+import javax.schema.Table;
 import javax.sqlite.SQLiteDatabase;
 import javax.util.Debug;
 import javax.util.DBUtils;
 
-public class Schema {
+public class SQLiteSchema {
   static final int FIRST_INDEX = 1;
   
   final SQLiteDatabase db;
 
-  public Schema(SQLiteDatabase db) {
+  public SQLiteSchema(SQLiteDatabase db) {
     this.db = db;
   }
   
@@ -30,7 +34,7 @@ public class Schema {
    */
   public void execSQL(String sql) throws SQLException {
     if (isDebugger())
-      Debug.i(Schema.class, sql);
+      Debug.i(SQLiteSchema.class, sql);
 
     db.execSQL(sql);
   }
