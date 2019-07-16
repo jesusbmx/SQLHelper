@@ -2,7 +2,7 @@ package javax.util;
 
 public final class Debug {
 
-  private static boolean debuggable;
+  private static boolean debuggable = true;
   
   public static boolean isDebuggable() {
     return debuggable;
