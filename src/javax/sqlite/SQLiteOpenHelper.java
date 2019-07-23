@@ -150,8 +150,10 @@ public abstract class SQLiteOpenHelper {
     
     SQLiteConfig config = new SQLiteConfig();
     config.setReadOnly(!writable);
-    Connection conn = config.createConnection("jdbc:sqlite:" + path.getPath());
-    SQLiteDatabase db = new SQLiteDatabase(conn);
+    
+    String url = "jdbc:sqlite:" + path.getPath();
+    Connection conn = config.createConnection(url);
+    SQLiteDatabase db = new SQLiteDatabase(url, conn);
     
     return db;
   }

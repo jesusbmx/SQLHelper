@@ -17,9 +17,15 @@ public class SQLiteDatabase implements AutoCloseable, Database {
   private static final String TAG = "SQLiteDatabase";
 
   private final Connection conn;
+  private final String url;
   
-  public SQLiteDatabase(Connection conn) {
+  public SQLiteDatabase(String url, Connection conn) {
+    this.url = url;
     this.conn = conn;
+  }
+  
+  public String url() {
+    return url;
   }
   
   public Connection connection() {
